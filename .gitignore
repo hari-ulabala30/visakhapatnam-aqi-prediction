@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Secrets / environment
+.env
+
+# Generated model and runtime files
+aqi_model.pkl
+today_aqi.csv
+future_predictions.csv
+logs.txt
+
+# Historical dataset is intentionally kept in the repository as seed data.
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b1220">
+  <title>Visakhapatnam AQI Prediction</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-logo"><span>A</span><i>Q</i></div>
+        <div class="brand-copy">
+          <strong>Visakhapatnam AQI</strong>
+          <span>AQI Intelligence</span>
+        </div>
+        <button class="mobile-close" id="closeSidebar" aria-label="Close menu">×</button>
+      </div>
+
+      <div class="sidebar-label">DASHBOARD</div>
+      <nav class="nav-list">
+        <button class="nav-item active" data-section="overview"><span class="nav-icon">⌂</span><span>Overview</span></button>
+        <button class="nav-item" data-section="air-quality"><span class="nav-icon">◉</span><span>Air Quality</span></button>
+        <button class="nav-item" data-section="forecast"><span class="nav-icon">⌁</span><span>Forecast</span></button>
+        <button class="nav-item" data-section="weather"><span class="nav-icon">☁</span><span>Weather</span></button>
+        <button class="nav-item" data-section="insights"><span class="nav-icon">✦</span><span>Insights</span></button>
+      </nav>
+
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-label">PIPELINE</div>
+      <div class="pipeline-mini">
+        <div><span class="pipeline-dot on"></span><b>Live data</b><small>Latest observation</small></div>
+        <div><span class="pipeline-dot on"></span><b>AQI engine</b><small>Direct calculation</small></div>
+        <div><span class="pipeline-dot on"></span><b>ML forecast</b><small>7-day outlook</small></div>
+      </div>
+
+      <div class="sidebar-bottom">
+        <div class="system-card">
+          <div class="system-icon">✓</div>
+          <div><b>System online</b><small>Dashboard backend connected</small></div>
+        </div>
+        <button id="refreshBtn" class="refresh-btn"><span>↻</span> Refresh data</button>
+      </div>
+    </aside>
+
+    <div class="mobile-backdrop" id="mobileBackdrop"></div>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
+          <div>
+            <div class="eyebrow-line"><span class="live-dot"></span> LIVE MONITORING <span class="slash">/</span> VISAKHAPATNAM</div>
+            <h1>Air Quality Intelligence</h1>
+            <p class="subtitle">Live observations, historical patterns and machine-learning AQI forecasting in one place.</p>
+          </div>
+        </div>
+        <div class="top-actions">
+          <div class="update-pill"><span class="status-dot"></span><span id="lastUpdated">Waiting for data</span></div>
+          <button class="icon-btn" id="themeBtn" title="Toggle theme">☾</button>
+        </div>
+      </header>
+
+      <section id="overview" class="page-section active-section">
+        <div class="hero-grid">
+          <article class="hero-card">
+            <div class="hero-bg-grid"></div>
+            <div class="hero-copy">
+              <div class="eyebrow-line mint">CURRENT AIR QUALITY</div>
+              <h2 id="heroTitle">Loading AQI…</h2>
+              <p id="heroText">Reading the latest observation from the AQI data pipeline.</p>
+              <div class="hero-meta">
+                <span class="meta-chip">◷ <span id="currentDate">—</span></span>
+                <span class="meta-chip">⌖ Visakhapatnam, Andhra Pradesh</span>
+              </div>
+              <div class="aqi-scale" aria-label="AQI scale">
+                <div class="scale-track">
+                  <span class="good"></span><span class="sat"></span><span class="mod"></span><span class="poor"></span><span class="very-poor"></span><span class="severe"></span>
+                  <i id="scaleMarker" class="scale-marker"></i>
+                </div>
+                <div class="scale-labels"><span>0</span><span>50</span><span>100</span><span>200</span><span>300</span><span>400</span><span>500+</span></div>
+              </div>
+            </div>
+            <div class="gauge-wrap">
+              <div class="gauge-glow"></div>
+              <svg id="gauge" viewBox="0 0 240 175" aria-label="AQI gauge">
+                <defs>
+                  <linearGradient id="gaugeGradient" x1="0" x2="1">
+                    <stop offset="0%" stop-color="#49d7a9"/>
+                    <stop offset="55%" stop-color="#ffd166"/>
+                    <stop offset="100%" stop-color="#ff5d73"/>
+                  </linearGradient>
+                </defs>
+                <path class="gauge-bg" d="M30 145 A90 90 0 0 1 210 145"></path>
+                <path id="gaugeArc" class="gauge-arc" d="M30 145 A90 90 0 0 1 210 145"></path>
+                <line id="gaugeNeedle" class="needle" x1="120" y1="145" x2="120" y2="53"></line>
+                <circle cx="120" cy="145" r="8" class="needle-dot"></circle>
+                <text x="120" y="128" text-anchor="middle" id="gaugeValue">—</text>
+                <text x="120" y="151" text-anchor="middle" class="gauge-label">LIVE AQI</text>
+              </svg>
+              <div id="categoryBadge" class="aqi-badge">—</div>
+            </div>
+          </article>
+
+          <div class="hero-stats">
+            <article class="metric-card accent-mint"><div class="card-head"><span>PM2.5</span><span class="micro-icon">◌</span></div><strong id="pm25">—</strong><small>µg/m³ · latest</small></article>
+            <article class="metric-card accent-blue"><div class="card-head"><span>PM10</span><span class="micro-icon">◉</span></div><strong id="pm10">—</strong><small>µg/m³ · latest</small></article>
+            <article class="metric-card accent-violet"><div class="card-head"><span>NO₂</span><span class="micro-icon">N</span></div><strong id="no2">—</strong><small>µg/m³ · latest</small></article>
+            <article class="metric-card accent-amber"><div class="card-head"><span>SO₂</span><span class="micro-icon">S</span></div><strong id="so2">—</strong><small>µg/m³ · latest</small></article>
+            <article class="metric-card accent-orange"><div class="card-head"><span>Temperature</span><span class="micro-icon">°</span></div><strong id="temp">—</strong><small>°C · latest</small></article>
+            <article class="metric-card accent-cyan"><div class="card-head"><span>Humidity</span><span class="micro-icon">%</span></div><strong id="humidity">—</strong><small>% · latest</small></article>
+          </div>
+        </div>
+
+        <div class="section-heading">
+          <div><span class="eyebrow">HISTORICAL ANALYTICS</span><h3>AQI at a glance</h3></div>
+          <div class="section-actions">
+            <div class="range-switch" id="rangeSwitch">
+              <button data-range="7">7D</button><button class="active" data-range="30">30D</button><button data-range="90">90D</button><button data-range="all">ALL</button>
+            </div>
+            <select id="yearSelect" aria-label="Select year"></select>
+          </div>
+        </div>
+
+        <div class="stats-row">
+          <article class="stat-card"><span>Average AQI</span><strong id="avgAqi">—</strong><small>Selected historical period</small></article>
+          <article class="stat-card"><span>Maximum AQI</span><strong id="maxAqi">—</strong><small>Selected historical period</small></article>
+          <article class="stat-card"><span>Minimum AQI</span><strong id="minAqi">—</strong><small>Selected historical period</small></article>
+          <article class="stat-card"><span>7-Day Forecast Avg.</span><strong id="futureAvg">—</strong><small>ML forecast</small></article>
+          <article class="stat-card"><span>Records</span><strong id="recordCount">—</strong><small>Historical observations</small></article>
+        </div>
+
+        <div class="dashboard-grid trend-grid">
+          <article class="panel panel-large">
+            <div class="panel-head"><div><span class="eyebrow">DAILY SIGNAL</span><h3>AQI trend</h3></div><span class="legend"><i class="dot historical"></i> Historical</span></div>
+            <div class="chart-box"><canvas id="aqiTrendChart"></canvas></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head"><div><span class="eyebrow">DISTRIBUTION</span><h3>AQI categories</h3></div></div>
+            <div class="chart-box doughnut-box"><canvas id="categoryChart"></canvas></div>
+          </article>
+        </div>
+
+        <div class="dashboard-grid lower-grid">
+          <article class="panel forecast-preview">
+            <div class="panel-head"><div><span class="eyebrow">MACHINE LEARNING</span><h3>7-day outlook</h3></div><button class="text-btn" data-jump="forecast">View forecast →</button></div>
+            <div id="forecastMiniGrid" class="forecast-mini-grid"></div>
+          </article>
+          <article class="panel pulse-panel">
+            <div class="panel-head"><div><span class="eyebrow">CITY PULSE</span><h3>Current atmosphere</h3></div><span class="mini-live">● Live</span></div>
+            <div class="pulse-grid">
+              <div><span>Wind</span><b id="pulseWind">—</b><small>speed</small></div>
+              <div><span>Rainfall</span><b id="pulseRain">—</b><small>latest</small></div>
+              <div><span>Solar</span><b id="pulseSolar">—</b><small>radiation</small></div>
+              <div><span>Ozone</span><b id="pulseOzone">—</b><small>µg/m³</small></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="air-quality" class="page-section">
+        <div class="section-heading"><div><span class="eyebrow">POLLUTANT INTELLIGENCE</span><h3>Air quality analytics</h3><p class="section-subtitle">Latest pollutant observations and historical distribution.</p></div></div>
+        <div id="pollutantCards" class="pollutant-cards"></div>
+        <div class="dashboard-grid">
+          <article class="panel panel-large"><div class="panel-head"><div><span class="eyebrow">LATEST OBSERVATION</span><h3>Pollutant concentration</h3></div><span class="unit-note">µg/m³ where applicable</span></div><div class="chart-box"><canvas id="pollutantChart"></canvas></div></article>
+          <article class="panel"><div class="panel-head"><div><span class="eyebrow">HISTORICAL</span><h3>Pollutant averages</h3></div></div><div class="chart-box"><canvas id="pollutantHistoryChart"></canvas></div></article>
+        </div>
+        <article class="panel table-panel">
+          <div class="panel-head"><div><span class="eyebrow">DETAIL</span><h3>Historical pollutant statistics</h3></div><span id="pollutantCount" class="table-note">—</span></div>
+          <div class="table-wrap"><table><thead><tr><th>Pollutant</th><th>Average</th><th>Minimum</th><th>Maximum</th></tr></thead><tbody id="pollutantTable"></tbody></table></div>
+        </article>
+      </section>
+
+      <section id="forecast" class="page-section">
+        <div class="section-heading"><div><span class="eyebrow">MACHINE LEARNING</span><h3>7-day AQI forecast</h3><p class="section-subtitle">Forward-looking AQI generated from the current model pipeline.</p></div></div>
+        <div class="forecast-hero">
+          <div class="forecast-summary-main"><span class="eyebrow">NEXT 7 DAYS</span><strong id="forecastHeadline">—</strong><p id="forecastSummary">—</p><div class="forecast-meta-line"><span>Current → Day 1</span><b id="forecastDelta">—</b></div></div>
+          <div class="forecast-mini"><span>Highest</span><b id="futureMax">—</b><small id="futureMaxDay">—</small></div>
+          <div class="forecast-mini"><span>Lowest</span><b id="futureMin">—</b><small id="futureMinDay">—</small></div>
+        </div>
+        <article class="panel"><div class="panel-head"><div><span class="eyebrow">PREDICTION CURVE</span><h3>Future AQI</h3></div><span class="legend"><i class="dot predicted"></i> Predicted</span></div><div class="chart-box forecast-chart"><canvas id="futureChart"></canvas></div></article>
+        <article class="panel"><div class="panel-head"><div><span class="eyebrow">HISTORY + FORECAST</span><h3>Recent AQI and next 7 days</h3></div></div><div class="chart-box comparison-chart"><canvas id="comparisonChart"></canvas></div></article>
+        <article class="panel"><div class="panel-head"><div><span class="eyebrow">DAILY VIEW</span><h3>Prediction details</h3></div></div><div class="prediction-grid" id="predictionGrid"></div></article>
+      </section>
+
+      <section id="weather" class="page-section">
+        <div class="section-heading"><div><span class="eyebrow">ATMOSPHERIC CONDITIONS</span><h3>Weather intelligence</h3><p class="section-subtitle">Weather context surrounding the air-quality observations.</p></div></div>
+        <div class="weather-cards" id="weatherCards"></div>
+        <div class="dashboard-grid">
+          <article class="panel"><div class="panel-head"><div><span class="eyebrow">HISTORY</span><h3>Temperature</h3></div></div><div class="chart-box"><canvas id="tempChart"></canvas></div></article>
+          <article class="panel"><div class="panel-head"><div><span class="eyebrow">HISTORY</span><h3>Humidity</h3></div></div><div class="chart-box"><canvas id="humidityChart"></canvas></div></article>
+        </div>
+        <div class="dashboard-grid">
+          <article class="panel"><div class="panel-head"><div><span class="eyebrow">HISTORY</span><h3>Rainfall</h3></div></div><div class="chart-box small-chart"><canvas id="rainChart"></canvas></div></article>
+          <article class="panel"><div class="panel-head"><div><span class="eyebrow">HISTORY</span><h3>Solar radiation</h3></div></div><div class="chart-box small-chart"><canvas id="solarChart"></canvas></div></article>
+        </div>
+      </section>
+
+      <section id="insights" class="page-section">
+        <div class="section-heading"><div><span class="eyebrow">INTERPRETATION</span><h3>Project insights</h3><p class="section-subtitle">Automatically generated observations from the dashboard data.</p></div></div>
+        <div class="insight-grid" id="insightGrid"></div>
+        <div class="pipeline-card">
+          <div class="pipeline-head"><div><span class="eyebrow">HOW THIS PROJECT WORKS</span><h3>From live data to forecast</h3></div></div>
+          <div class="pipeline-flow">
+            <div class="flow-step"><span class="flow-number">01</span><b>Live observations</b><small>Pollutants + weather are collected into the project dataset.</small></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step"><span class="flow-number">02</span><b>AQI calculation</b><small>Today's AQI is calculated from the latest pollutant values.</small></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step"><span class="flow-number">03</span><b>ML forecasting</b><small>The trained ensemble produces the 7-day AQI outlook.</small></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step"><span class="flow-number">04</span><b>Dashboard</b><small>Current, historical and predicted AQI are visualized together.</small></div>
+          </div>
+        </div>
+      </section>
+
+      <div id="errorBox" class="error-box hidden"></div>
+      <footer>
+        <span>Visakhapatnam AQI Prediction</span>
+        <span>Live data → AQI calculation → ML forecasting → dashboard</span>
+      </footer>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
