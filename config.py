@@ -10,7 +10,14 @@ import os
 
 
 # API KEY
-OPENWEATHER_API_KEY = os.getenv("0a39bb849a7673c7d205dc5c5fd7beb8")
+
+OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY")
+
+
+if not OPENWEATHER_API_KEY:
+    raise ValueError("OPENWEATHER_API_KEY is not set")
+
+
 
 # LOCATION (Vizag)
 LATITUDE = 17.6868

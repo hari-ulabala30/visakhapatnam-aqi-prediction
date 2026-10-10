@@ -24,3 +24,8 @@ logs.txt
 .idea/
 .DS_Store
 Thumbs.db
+
+
+# Automation logs and local backup
+automation_console.log
+run_aqi_automation_v2_old.bat
