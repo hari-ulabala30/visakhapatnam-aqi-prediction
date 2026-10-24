@@ -1,2 +1,2 @@
 pm25,pm10,no,no2,so2,co,o3,xylene,temp,humidity,wind_speed,wind_direction,rainfall,total_rf,solar_radiation,vws,date,ozone,AQI,AQI_Category
-46.35,49.39,0.05,3.84,6.36,0.36583,110.54,0,32.8,54,6.3,53,0.0,0.0,715.0,6.3,23-10-2026,110.54,115,Moderate
+82.03,86.07,0.14,1.72,5.64,0.4161,133.65,0,32.4,50,5.7,44,0.0,0.0,707.0,5.7,24-10-2026,133.65,173,Moderate
