@@ -1,2 +1,2 @@
 pm25,pm10,no,no2,so2,co,o3,xylene,temp,humidity,wind_speed,wind_direction,rainfall,total_rf,solar_radiation,vws,date,ozone,AQI,AQI_Category
-13.83,16.67,0.05,1.02,1.3,0.22247999999999998,84.12,0,27.6,85,6.5,98,0.1,0.1,450.0,6.5,31-10-2026,84.12,84,Satisfactory
+6.2,9.23,0.06,0.77,1.58,0.17107,54.96,0,29.4,71,11.3,81,0.0,0.0,436.0,11.3,01-11-2026,54.96,55,Satisfactory
